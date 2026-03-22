@@ -1,0 +1,75 @@
+o create a project in a remote repository and apply concepts of:
+
+Fork
+Merge
+Diff
+Merge Conflict
+Branch
+Pull Request
+
+🔹 1. Fork a Repository (GitHub)
+Open a repository on GitHub
+Click on Fork
+Provide repository name
+Click Create Fork
+
+🔹 2. Clone Forked Repository
+Click on Code
+Copy repository URL
+
+Command:
+git clone <repository-url>
+
+🔹 3. Setup in Git Bash
+git init
+cd <cloned-folder>
+git config --global user.email "email"
+git config --global user.name "name"
+
+🔹 4. Create a Branch
+git branch f1
+
+🔹 5. Switch to Branch
+git checkout f1
+
+🔹 6. Create Files and Commit
+
+Create two files with different content:
+
+nano file1.txt
+git add file1.txt
+
+nano file2.txt
+git add file2.txt
+
+git commit -m "2 files committed"
+
+🔹 7. Checkout to Master Branch
+git checkout master
+
+🔹 8. Merge Branch
+git merge f1
+
+🔹 9. Push to Remote Repository
+git push -u origin master
+
+⚠️ Merge Conflict Demonstration
+Step 1: Create Conflict in Master
+nano file3.txt
+git add file3.txt
+git commit -m "file3.txt committed"
+
+Step 2: Switch to Branch
+git checkout f1
+
+Step 3: Create Same File with Different Content
+nano file3.txt
+git add file3.txt
+git commit -m "file3.txt committed"
+
+Step 4: Try Merging
+git checkout master
+git merge f1
+
+🔍 10. Check Conflict
+git diff file3.txt

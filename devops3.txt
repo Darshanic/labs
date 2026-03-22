@@ -1,0 +1,37 @@
+🔹 1. Prepare Project (GitHub)
+Open GitHub repository
+Create a Java file:
+public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello World");
+    }
+}
+
+🔹 3. Configure Jenkins Job
+➤ Open Jenkins
+Launch Jenkins dashboard
+➤ Create New Job
+Click on New Item
+Enter name: DevOps-LAB-Jenkins
+Select Freestyle Project
+
+🔹 4. Configure Source Code Management
+Select Git
+Enter repository URL:
+https://github.com/username/repository-name.git
+
+🔹 5. Configure Branch
+Under Branches to Build
+Set branch: */main
+
+🔹 6. Configure Build Steps
+Go to Build Section
+Select: Execute Windows Batch Command
+
+Command
+javac HelloWorld.java
+
+🔹 7. Save and Build
+Click Apply
+Click Save
+Click Build Now

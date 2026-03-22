@@ -1,0 +1,66 @@
+🔹 1. Create Maven Project (Eclipse IDE)
+Open Eclipse IDE
+Go to: File → New → Maven Project → Next
+In filter, type: org.apache.maven
+Select:
+maven-archetype-quickstart (1.5)
+
+🔹 2. Configure Project
+Group ID: exp11
+Artifact ID: exp11
+Click Finish
+Console appears → type Y → press Enter
+
+🔹 3. Add Dependency
+Open: pom.xml
+Go to line ~33
+Open browser → search JSON Simple Maven dependency
+Copy dependency code
+Paste into pom.xml inside <dependencies>
+Save file
+
+🔹 4. Create Java Class
+In Package Explorer
+Right click on src/test/java
+New → Class
+Name: Exp11
+
+🔹 5. Java Program
+package exp11.exp11;
+
+import java.io.*;
+import org.json.simple.*;
+import org.json.simple.parser.*;
+
+public class Exp11 {
+    public static void main(String[] args) throws IOException, ParseException {
+
+        JSONParser jsonparser = new JSONParser();
+        FileReader filereader = new FileReader("./jsonfile/emp.json");
+
+        Object obj = jsonparser.parse(filereader);
+        JSONObject empobj = (JSONObject) obj;
+
+        String fname = (String) empobj.get("firstname");
+        String lname = (String) empobj.get("lastname");
+
+        System.out.println("firstname: " + fname);
+        System.out.println("lastname: " + lname);
+    }
+}
+
+🔹 6. Create JSON File
+Right click on project → New → Folder
+Name: jsonfile
+Inside folder → New → File
+Name: emp.json
+
+🔹 7. Add JSON Data
+{
+  "firstname": "Darshan",
+  "lastname": "Shukla"
+}
+
+🔹 8. Run Program
+Open Exp11.java
+Run the file

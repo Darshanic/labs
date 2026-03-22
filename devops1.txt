@@ -1,0 +1,54 @@
+To demonstrate and create a project using Git Bash and GitHub in both local and remote repositories, and to apply Git commands such as:
+
+init
+status
+log
+add
+commit
+push
+config
+clone
+reset
+
+1. Create Repository
+Create a repository on GitHub.
+
+2. Clone Repository
+Copy repository link and paste in Git Bash.
+
+Command:
+git clone https://github.com/DarshanVCE/xxx.git
+
+3. Initialize Git Repository
+git init
+
+4. Create File
+nano first.txt
+
+5. Configure Git User
+git config --global user.email "darshanforgithub@gmail.com"
+git config --global user.name "DarshanVCE"
+
+6. Check Git Configuration
+git config --global --list
+
+7. Check Repository Status
+git status
+
+8. Add File to Staging Area
+git add first.txt
+
+9. Commit Changes
+git commit -m "first commit"
+
+10. Push to GitHub
+git push
+
+11. Pull from Remote Repository
+git pull
+
+12. Reset Repository
+git reset --hard
+
+13. View Commit History
+git log
