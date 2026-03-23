@@ -1,0 +1,96 @@
+#lab1
+import tensorflow as tf
+from tensorflow.keras import layers
+
+(x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
+
+x_train, x_test = x_train/255.0, x_test/255.0
+
+model = tf.keras.Sequential([
+    layers.Flatten(input_shape=(28,28)),
+    layers.Dense(128, activation='relu'),
+    layers.Dense(10, activation='softmax')
+])
+
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
+model.fit(x_train, y_train, epochs=3)
+print("Accuracy:", model.evaluate(x_test, y_test)[1])
+
+#lab2
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+import tensorflow as tf
+
+data = load_iris()
+x_train, x_test, y_train, y_test = train_test_split(data.data, data.target, test_size=0.2)
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(10, activation='relu', input_shape=(4,)),
+    tf.keras.layers.Dense(3, activation='softmax')
+])
+
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
+model.fit(x_train, y_train, epochs=20)
+print("Accuracy:", model.evaluate(x_test, y_test)[1])
+
+#lab3
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import skipgrams
+import tensorflow as tf
+import numpy as np
+
+texts = ["deep learning is powerful"]
+
+tokenizer = Tokenizer()
+tokenizer.fit_on_texts(texts)
+
+seq = tokenizer.texts_to_sequences(texts)[0]
+vocab_size = len(tokenizer.word_index) + 1
+
+pairs, labels = skipgrams(seq, vocabulary_size=vocab_size, seed=42)
+
+pairs = np.array(pairs)
+
+# 🔥 Minimal model
+model = tf.keras.Sequential([
+    tf.keras.layers.Embedding(vocab_size, 10, input_length=1),
+    tf.keras.layers.Reshape((10,)),
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
+x = tf.convert_to_tensor(pairs[:,0].reshape(-1,1))
+y = tf.convert_to_tensor(labels)
+
+model.fit(x, y, epochs=10, verbose=1)
+
+# Get embedding
+embedding = model.get_layer(index=0).get_weights()[0]
+print("Shape:", embedding.shape)
+print(embedding)
+
+print("Embedding matrix shape:", embedding.shape)
+
+#lab4
+import tensorflow as tf
+from tensorflow.keras.datasets import imdb
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+(x_train, y_train), (x_test, y_test) = imdb.load_data(num_words=5000)
+
+x_train = pad_sequences(x_train, maxlen=200)
+x_test = pad_sequences(x_test, maxlen=200)
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Embedding(5000, 32),
+    tf.keras.Flatten(),
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
+model.fit(x_train, y_train, epochs=3)
+print("Accuracy:", model.evaluate(x_test, y_test)[1])

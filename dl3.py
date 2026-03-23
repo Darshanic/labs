@@ -29,7 +29,12 @@ labels = []
 window_size = 2
 
 for seq in sequences:
-    sg = skipgrams(seq, vocabulary_size=vocab_size, window_size=window_size)
+    sg = skipgrams(
+    seq,
+    vocabulary_size=vocab_size,
+    window_size=window_size,
+    seed=42   # 🔥 THIS FIXES EVERYTHING
+)
     pairs.extend(sg[0])
     labels.extend(sg[1])
 
