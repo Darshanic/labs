@@ -1,0 +1,222 @@
+#lab1
+# Import libraries
+import tensorflow as tf
+from tensorflow.keras import layers, models
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load dataset
+(x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
+
+# Normalize data
+x_train = x_train / 255.0
+x_test = x_test / 255.0
+
+# Build model
+model = models.Sequential()
+
+model.add(layers.Flatten(input_shape=(28, 28)))
+model.add(layers.Dense(128, activation='relu'))
+model.add(layers.Dropout(0.2))
+model.add(layers.Dense(10, activation='softmax'))
+
+# Compile model
+model.compile(
+    optimizer='adam',
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+# Train model
+model.fit(x_train, y_train, epochs=5)
+
+# Evaluate model
+test_loss, test_acc = model.evaluate(x_test, y_test, verbose=2)
+
+print(f"\nTest Accuracy: {test_acc}")
+
+# Predictions
+predictions = model.predict(x_test)
+
+#lab2
+# Import libraries
+import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.utils import to_categorical
+
+# Load dataset
+iris = load_iris()
+x = iris.data
+y = iris.target
+
+# Convert labels to categorical
+y = to_categorical(y, num_classes=3)
+
+# Split data
+x_train, x_test, y_train, y_test = train_test_split(
+    x, y, test_size=0.2, random_state=42
+)
+
+# Feature scaling
+scaler = StandardScaler()
+x_train = scaler.fit_transform(x_train)
+x_test = scaler.transform(x_test)
+
+# Build model
+model = Sequential()
+model.add(Dense(16, activation='relu', input_shape=(4,)))
+model.add(Dense(12, activation='relu'))
+model.add(Dense(8, activation='relu'))
+model.add(Dense(3, activation='softmax'))
+
+# Compile model
+model.compile(
+    optimizer='adam',
+    loss='categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+# Train model
+model.fit(x_train, y_train, epochs=50, batch_size=16)
+
+# Evaluate model
+loss, accuracy = model.evaluate(x_test, y_test)
+
+print(f"Test Accuracy: {accuracy}")
+
+#lab3
+# Import libraries
+import tensorflow as tf
+import numpy as np
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import skipgrams
+
+# Corpus
+corpus = [
+    "neural networks are powerful",
+    "word embedding captures meaning",
+    "deep learning models learn representation",
+    "natural language processing uses embedding"
+]
+
+# Tokenization
+tokenizer = Tokenizer()
+tokenizer.fit_on_texts(corpus)
+
+word_index = tokenizer.word_index
+vocab_size = len(word_index) + 1
+
+# Convert text to sequences
+sequences = tokenizer.texts_to_sequences(corpus)
+
+# Generate skip-gram pairs
+pairs = []
+labels = []
+
+window_size = 2
+
+for seq in sequences:
+    sg = skipgrams(seq, vocabulary_size=vocab_size, window_size=window_size)
+    pairs.extend(sg[0])
+    labels.extend(sg[1])
+
+pairs = np.array(pairs)
+labels = np.array(labels)
+
+# Split target and context
+target_words = pairs[:, 0]
+context_words = pairs[:, 1]
+
+# Build model
+embedding_dim = 50
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Embedding(input_dim=vocab_size, output_dim=embedding_dim, input_length=1, name='embedding'),
+    tf.keras.layers.Reshape((embedding_dim,)),
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+# Compile
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+# Train
+model.fit(target_words, labels, epochs=50, verbose=1)
+
+# Get embeddings
+embedding_layer = model.get_layer('embedding')
+embedding_weights = embedding_layer.get_weights()[0]
+
+# Example: print embedding of a word
+word = "neural"
+print(f"Embedding for '{word}':")
+print(embedding_weights[word_index[word]])
+
+
+#lab4
+# Import libraries
+import numpy as np
+import tensorflow as tf
+from tensorflow.keras import layers, models
+from tensorflow.keras.datasets import imdb
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+import matplotlib.pyplot as plt
+
+# Parameters
+max_words = 10000
+max_len = 500
+
+# Load dataset
+(x_train, y_train), (x_test, y_test) = imdb.load_data(num_words=max_words)
+
+# Pad sequences
+x_train = pad_sequences(x_train, maxlen=max_len)
+x_test = pad_sequences(x_test, maxlen=max_len)
+
+# Build model
+model = models.Sequential()
+
+model.add(layers.Embedding(input_dim=max_words, output_dim=128, input_length=max_len))
+model.add(layers.Flatten())
+model.add(layers.Dense(128, activation='relu'))
+model.add(layers.Dense(1, activation='sigmoid'))
+
+# Compile
+model.compile(
+    optimizer='adam',
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)
+
+# Train
+history = model.fit(
+    x_train, y_train,
+    epochs=5,
+    batch_size=32,
+    validation_split=0.2
+)
+
+# Evaluate
+test_loss, test_acc = model.evaluate(x_test, y_test, verbose=2)
+print(f"\nTest Accuracy: {test_acc}")
+
+# Plot accuracy
+plt.plot(history.history['accuracy'], label='Train Accuracy')
+plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+plt.title('Model Accuracy')
+plt.ylabel('Accuracy')
+plt.xlabel('Epoch')
+plt.legend()
+plt.show()
+
+# Plot loss
+plt.plot(history.history['loss'], label='Train Loss')
+plt.plot(history.history['val_loss'], label='Validation Loss')
+plt.title('Model Loss')
+plt.ylabel('Loss')
+plt.xlabel('Epoch')
+plt.legend()
+plt.show()
